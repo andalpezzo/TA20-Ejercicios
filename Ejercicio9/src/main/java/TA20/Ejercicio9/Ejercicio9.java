@@ -2,19 +2,35 @@ package TA20.Ejercicio9;
 
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+
 import java.awt.Font;
 
 public class Ejercicio9 extends JFrame {
 
 	private JPanel contentPane;
-	JButton btn1, btn2, btn3 , btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12, btn13, btn14, btn15, btn16;
+	private JButton btn;
+	private JButton primerBtn;
+	private JButton clickedBtn;
+	private int contDibujos = 0;
+	private int contClickados = 0;
+	private int parejasFormadas = 0;
+	private JLabel lblHasGanado;
+	private ArrayList<String> dibujosRnd = new ArrayList<String>();
+	private String dibujoRandom = "";
 	private String[] dibujos = {"★", "✿", "☺", "♡", "👁", "🖍", "☾", "☀"};
 
 	/**
@@ -30,110 +46,99 @@ public class Ejercicio9 extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(new GridLayout(4, 4, 2, 2));
 		
-		btn1 = new JButton("");
-		btn1.setFont(new Font("", Font.PLAIN, 50));
-		contentPane.add(btn1);
-		
-		btn2 = new JButton("");
-		btn2.setFont(new Font("", Font.PLAIN, 50));
-		contentPane.add(btn2);
-		
-		btn3 = new JButton("");
-		btn3.setFont(new Font("", Font.PLAIN, 50));
-		contentPane.add(btn3);
-		
-		btn4 = new JButton("");
-		btn4.setFont(new Font("", Font.PLAIN, 50));
-		contentPane.add(btn4);
-		
-		btn5 = new JButton("");
-		btn5.setFont(new Font("", Font.PLAIN, 50));
-		contentPane.add(btn5);
-		
-		btn6 = new JButton("");
-		btn6.setFont(new Font("", Font.PLAIN, 50));
-		contentPane.add(btn6);
-		
-		btn7 = new JButton("");
-		btn7.setFont(new Font("", Font.PLAIN, 50));
-		contentPane.add(btn7);
-		
-		btn8 = new JButton("");
-		btn8.setFont(new Font("", Font.PLAIN, 50));
-		contentPane.add(btn8);
-		
-		btn9 = new JButton("");
-		btn9.setFont(new Font("", Font.PLAIN, 50));
-		contentPane.add(btn9);
-		
-		btn10 = new JButton("");
-		btn10.setFont(new Font("", Font.PLAIN, 50));
-		contentPane.add(btn10);
-		
-		btn11 = new JButton("");
-		btn11.setFont(new Font("", Font.PLAIN, 50));
-		contentPane.add(btn11);
-		
-		btn12 = new JButton("");
-		btn12.setFont(new Font("", Font.PLAIN, 50));
-		contentPane.add(btn12);
-		
-		btn13 = new JButton("");
-		btn13.setFont(new Font("", Font.PLAIN, 50));
-		contentPane.add(btn13);
-		
-		btn14 = new JButton("");
-		btn14.setFont(new Font("", Font.PLAIN, 50));
-		contentPane.add(btn14);
-		
-		btn15 = new JButton("");
-		btn15.setFont(new Font("", Font.PLAIN, 50));
-		contentPane.add(btn15);
-		
-		btn16 = new JButton("");
-		btn16.setFont(new Font("", Font.PLAIN, 50));
-		contentPane.add(btn16);
-		
-		llenarBotones();
-		
+		generarBotones();
 		setVisible(true);
 	}
-
-	public void llenarBotones() {
-		int index;
-		ArrayList<String> dibujosRnd = new ArrayList<String>();
-		
-		Random rnd = new Random();
-		
-		for(int i=0; i <= 16; i++) {
-			index = rnd.nextInt(dibujos.length);
-			dibujosRnd.add(dibujos[index]);
-			System.out.println(dibujosRnd.get(i));
-			
-			if(i > 0) {
-				for(int x=0; x < dibujosRnd.size(); x++) {
-					if(dibujosRnd.get(i) == dibujosRnd.get(x)) {
-						i--;
-					}
-				}
-			}
-		}		
 	
-		/*btn1.setText(dibujosRnd[0]);
-		btn2.setText(dibujosRnd[1]);
-		btn3.setText(dibujosRnd[2]);
-		btn4.setText(dibujosRnd[3]);
-		btn5.setText(dibujosRnd[4]);
-		btn6.setText(dibujosRnd[5]);
-		btn7.setText(dibujosRnd[6]);
-		btn8.setText(dibujosRnd[7]);
-		btn9.setText(dibujosRnd[8]);
-		btn10.setText(dibujosRnd[9]);
-		btn11.setText(dibujosRnd[10]);
-		btn12.setText(dibujosRnd[11]);
-		btn13.setText(dibujosRnd[12]);
-		btn14.setText(dibujosRnd[13]);
-		btn15.setText(dibujosRnd[14]);
-		btn16.setText(dibujosRnd[15]);*/
+	public String dibujoRandom() {
+		contDibujos++;
+		Random rnd = new Random();
+		int index = rnd.nextInt(dibujos.length);
+		
+		while (dibujosRnd.contains(dibujos[index])) {
+			index = rnd.nextInt(dibujos.length);
+		}
+		
+		dibujosRnd.add(dibujos[index]);
+		dibujoRandom = dibujos[index];
+		
+		if(contDibujos == 8) {
+			dibujosRnd.clear();
+		}
+		
+		System.out.println(dibujosRnd.toString());
+		return dibujoRandom;
 	}
+	
+	public void generarBotones() {
+		for (int i=0; i < 16; i++) {
+			btn = new JButton("");
+			btn.setFont(new Font("", Font.PLAIN, 50));
+			btn.setForeground(new Color(0,0,0, 0));
+			//Llenamos cada boton con un dibujo generado de manera random
+			btn.setText(dibujoRandom());
+			btn.addActionListener(clicked);
+			btn.putClientProperty("btnIndex", 0);
+			contentPane.add(btn);
+		}
+	}
+	
+	//Eventos del los botones
+	ActionListener clicked = new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			System.out.println("btn clicked");
+			
+			primerBtn = clickedBtn;
+			clickedBtn = (JButton) e.getSource();
+			int btnIndex = (int) clickedBtn.getClientProperty("btnIndex");
+			
+			clickedBtn.putClientProperty("btnIndex", btnIndex);
+			clickedBtn.setForeground(Color.black);
+			
+			contClickados ++;
+			
+			//Contamos si se han clickado 2 botones para comparar los dibujos
+			if(contClickados == 2) {
+				primerBtn.setForeground(Color.black);
+				
+				if(primerBtn.getText() == clickedBtn.getText()) {
+					//Si son iguales los desabilitamos para que no se puedan clickar
+					clickedBtn.setEnabled(false);
+					primerBtn.setEnabled(false);
+				
+					parejasFormadas++;
+					if(parejasFormadas == 8) {
+						final JDialog dialog = new JDialog();  
+						setDefaultCloseOperation(dialog.EXIT_ON_CLOSE);
+						lblHasGanado = new JLabel("¡HAS GANADO!");
+						lblHasGanado.setHorizontalAlignment(JLabel.CENTER);
+					    dialog.setSize(200, 100);
+					    dialog.setUndecorated(true);
+					    dialog.setLocationRelativeTo(contentPane);
+					    ((JComponent) dialog.getContentPane()).setOpaque(true);
+					    dialog.getContentPane().setBackground(new Color(193, 219, 245));
+					    Border raisedbevel = BorderFactory.createRaisedBevelBorder();
+					    dialog.getRootPane().setBorder(raisedbevel);
+					    dialog.add(lblHasGanado);
+					    dialog.setVisible(true);
+					  }
+				} else {
+					//Hacemos un delay de 1 segundo para que nos de tiempo de mirar que dibujos habia
+					new java.util.Timer().schedule( 
+				        new java.util.TimerTask() {
+				            @Override
+				            public void run() {
+				            	//Si no eran iguales ponemos el dibujo en transparente
+				            	clickedBtn.setForeground(new Color(0,0,0, 0));
+								primerBtn.setForeground(new Color(0,0,0, 0));
+				            }
+				        }, 
+				        800 
+					);
+				}
+				contClickados = 0;
+			}
+		}
+	};
 }
+
